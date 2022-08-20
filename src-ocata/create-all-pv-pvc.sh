@@ -1,5 +1,8 @@
 #!/bin/bash
 
+Kubectl create -f gluster_service.yaml
+Kubectl create -f gluster_endpoints.yaml
+
 kubectl create -f nfs-server-pv.yaml
 kubectl create -f nfs-server-pvc.yaml
 
