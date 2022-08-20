@@ -1,10 +1,7 @@
 #!/bin/bash
 
-kubectl label nodes node-1.novalocal controller=true compute=true nfs-server=true
-kubectl label nodes node-2.novalocal controller=true compute=true
-kubectl label nodes node-3.novalocal controller=true compute=true
-kubectl label nodes node-4.novalocal network=true
-kubectl label nodes node-5.novalocal network=true
+kubectl label nodes node1.ec2.internal controller=true compute=true
+kubectl label nodes node2.ec2.internal network=true
 
 ./update-configMap-env-common.sh
 ./update-configMap-init-container-scripts.sh
