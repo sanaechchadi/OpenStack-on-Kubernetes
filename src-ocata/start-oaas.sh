@@ -1,7 +1,7 @@
 #!/bin/bash
 
-kubectl label nodes node1.ec2.internal controller=true compute=true
-kubectl label nodes node2.ec2.internal network=true
+kubectl label nodes node1.ec2.internal controller=true compute=true --overwrite
+kubectl label nodes node2.ec2.internal network=true --overwrite
 
 ./update-configMap-env-common.sh
 ./update-configMap-init-container-scripts.sh
