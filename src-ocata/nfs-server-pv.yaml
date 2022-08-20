@@ -5,14 +5,15 @@ metadata:
   labels:
     app: pv-nfs-server
 spec:
-  accessModes:
-  #- ReadWriteOnce
-  - ReadWriteMany
+  storageClassName: manual
+  claimRef:
+    name: pvc-nfs-server
   capacity:
     storage: 100Gi
-  hostPath:
-    path: /home/data
-  volumeMode: Filesystem
-  #persistentVolumeReclaimPolicy: Recycle
+  accessModes:
+    - ReadWriteMany
+  glusterfs:
+    endpoints: glusterfs-cluster-prometheus
+    path: nfs
+    readOnly: false
   persistentVolumeReclaimPolicy: Retain
-  #persistentVolumeReclaimPolicy: Delete
