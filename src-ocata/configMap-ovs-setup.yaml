@@ -14,9 +14,13 @@ data:
     ## OVS Networking - BEGIN
     #export K8S_DEFAULT_GW_IP=$(ip route | awk '/default/ { print $3 }');
     export K8S_DEFAULT_GW_IP=$(ip route show 0.0.0.0/0 dev eth0 | awk '{print $3}');
+    echo "K8S_DEFAULT_GW_IP";
+    echo $K8S_DEFAULT_GW_IP;
     until ping -c 1 -W 1 $K8S_DEFAULT_GW_IP; do echo "gateway ping testing....."; sleep 1; done
     #export KRS_DEFAULT_GW_MAC=$(ip neigh | awk -v gw_ip="$K8S_DEFAULT_GW_IP" '$0~gw_ip {print $5}');
     export KRS_DEFAULT_GW_MAC=$(arp -n | grep "^$K8S_DEFAULT_GW_IP " | awk '{print $3}');
+    echo "KRS_DEFAULT_GW_MAC";
+    echo $KRS_DEFAULT_GW_MAC;
     if ! (lsmod | grep -q "^openvswitch "); then
       #insmod /lib/modules/$(uname -r)/kernel/net/openvswitch/openvswitch.ko;
       #until insmod $(find /lib/modules/ | grep "openvswitch.ko$" | tail -n 1); do echo "waiting for installing openvswitch kernel model....."; sleep 1; done
@@ -39,18 +43,32 @@ data:
     ip addr flush dev eth0;
     ip link set eth0 name phy-eth0;
     export K8S_PHY_ETH0_MAC=$(cat /sys/class/net/phy-eth0/address);
+    echo "K8S_PHY_ETH0_MAC";
+    echo $K8S_PHY_ETH0_MAC;
     ovs-vsctl add-br eth0;
     export K8S_BRIDGE_MAC=$(cat /sys/class/net/eth0/address);
+    echo "K8S_BRIDGE_MAC";
+    echo $K8S_BRIDGE_MAC;
     ovs-vsctl del-br eth0;
+    echo "1111111111111";
     ovs-vsctl add-br eth0 -- set bridge eth0 other-config:hwaddr="$K8S_PHY_ETH0_MAC";
+    echo "22222222222222222";
     ip link set dev phy-eth0 address $K8S_BRIDGE_MAC;
+    echo "333333333333";
     ovs-vsctl add-port eth0 phy-eth0;
+    echo "444444444444444";
     ip link set phy-eth0 up;
+    echo "5555555555";
     ip link set eth0 up;
+    echo "66666666666666";
     ip addr add $MY_POD_IP/24 dev eth0;
+    echo "77777777777777";
     route add default gw $K8S_DEFAULT_GW_IP dev eth0;
+    echo "888888888888888888";
     route add -net $(echo $MY_POD_IP | awk -F'.' '{print $1"."$2".0.0"}') netmask 255.255.0.0 gw $K8S_DEFAULT_GW_IP dev eth0;
+    echo "9999999999999999";
     arp -s $K8S_DEFAULT_GW_IP $KRS_DEFAULT_GW_MAC;
+    echo "000000000000000000000;
     unset K8S_DEFAULT_GW_IP K8S_BRIDGE_MAC K8S_PHY_ETH0_MAC;
     if ! (lsmod | grep -q "^ebtables "); then
       #insmod /lib/modules/$(uname -r)/kernel/net/bridge/netfilter/ebtables.ko;
