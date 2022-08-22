@@ -63,6 +63,8 @@ data:
     echo "66666666666666";
     ip addr add $MY_POD_IP/24 dev eth0;
     echo "77777777777777";
+    echo $K8S_DEFAULT_GW_IP;
+    ifconfig;
     route add default gw $K8S_DEFAULT_GW_IP dev eth0;
     echo "888888888888888888";
     route add -net $(echo $MY_POD_IP | awk -F'.' '{print $1"."$2".0.0"}') netmask 255.255.0.0 gw $K8S_DEFAULT_GW_IP dev eth0;
